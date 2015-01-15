@@ -4,8 +4,8 @@ require "pathname"
 gem "dm-core", ">=0.10.0"
 require "dm-core"
 
-require Pathname(__FILE__).dirname.expand_path / "associations.rb"
-require Pathname(__FILE__).dirname.expand_path / "types.rb" 
+require_relative "associations.rb"
+require_relative "types.rb" 
 
 module DataMapper
   module Is

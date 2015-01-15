@@ -3,6 +3,7 @@ require "pathname"
 
 gem "dm-core", ">=0.10.0"
 require "dm-core"
+require 'dm-migrations'
 
 spec_dir_path = Pathname(__FILE__).dirname.expand_path
 require spec_dir_path.parent + "lib/dm-polymorphic"
