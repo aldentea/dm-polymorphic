@@ -50,7 +50,7 @@ if HAS_SQLITE3 || HAS_MYSQL || HAS_POSTGRES
           item.reload
           item.comments.create(:text => "A Comment")
           item.reload
-          item.comments(:text => "A Comment").should have(1).item
+          expect(item.comments(:text => "A Comment").size).to eq 1
         end
     
         it "should add the comment with the << syntax for #{klass}" do
@@ -59,7 +59,7 @@ if HAS_SQLITE3 || HAS_MYSQL || HAS_POSTGRES
           item.comments << c
           c.save
           item.reload
-          item.comments(:text => "comment2").should have(1).item
+          expect(item.comments(:text => "comment2").size).to eq 1
         end
     
         it "should not add the comment with the << syntax for #{klass} if comment was not saved" do
@@ -67,7 +67,7 @@ if HAS_SQLITE3 || HAS_MYSQL || HAS_POSTGRES
           c = Comment.new(:text => "comment2a")
           item.comments << c
           item.reload
-          item.comments(:text => "comment2a").should have(0).item
+          expect(item.comments(:text => "comment2a").size).to eq 0
         end
     
         it "should access all the comments from the post for #{klass}" do
@@ -77,7 +77,7 @@ if HAS_SQLITE3 || HAS_MYSQL || HAS_POSTGRES
           [c1,c2].each{|c| item.comments << c}
           item.comments.save
           item.reload
-          item.comments.should have(2).items
+          expect(item.comments.size).to eq 2
         end
 
         it "should access the commentable from the comment for #{klass}" do
@@ -86,7 +86,8 @@ if HAS_SQLITE3 || HAS_MYSQL || HAS_POSTGRES
           item.comments << c
           c.save
           item.reload; c.reload
-          c.commentable.should == item
+          #c.commentable.should == item
+          expect(c.commentable).to eq(item)
         end
       end
 
@@ -100,10 +101,14 @@ if HAS_SQLITE3 || HAS_MYSQL || HAS_POSTGRES
         article.comments << c2
         article.save
         [post, article, c1, c2].map(&:reload)
-        c1.post.should == post
-        c1.article.should be_nil
-        c2.post.should be_nil
-        c2.article.should == article
+        #c1.post.should == post
+        #c1.article.should be_nil
+        #c2.post.should be_nil
+        #c2.article.should == article
+        expect(c1.post).to eq(post)
+        expect(c1.article).to eq(nil)
+        expect(c2.post).to eq(nil)
+        expect(c2.article).to eq(article)
       end  
         
       # it "should only make one query to each Model" do
