@@ -1,8 +1,8 @@
 require "rubygems"
-require "spec"
+#require "spec"
 require "rake/clean"
-require "rake/gempackagetask"
-require "spec/rake/spectask"
+require "rubygems/package_task"
+require "rspec/core/rake_task"
 require "pathname"
 
 CLEAN.include "{log,pkg}/"
@@ -28,7 +28,7 @@ task :default => [ :spec ]
 WIN32 = (RUBY_PLATFORM =~ /win32|mingw|cygwin/) rescue nil
 SUDO  = WIN32 ? "" : ("sudo" unless ENV["SUDOLESS"])
 
-Rake::GemPackageTask.new(spec) do |pkg|
+Gem::PackageTask.new(spec) do |pkg|
   pkg.gem_spec = spec
 end
 
@@ -45,9 +45,16 @@ namespace :jruby do
 end
 
 desc "Run specifications"
-Spec::Rake::SpecTask.new(:spec) do |t|
-  t.spec_opts << "--options" << "spec/spec.opts" if File.exists?("spec/spec.opts")
-  t.spec_files = Pathname.glob(Pathname.new(__FILE__).dirname + "spec/**/*_spec.rb")
+RSpec::Core::RakeTask.new(:spec) do |t|
+  #t.rspec_opts << "--options" << "spec/spec.opts" if File.exists?("spec/spec.opts")
+  if File.exists?("spec/spec.opts")
+    if t.rspec_opts
+      t.rspec_opts << "--options" << "spec/spec.opts"
+    else
+      t.rspec_opts = ["--options", "spec/spec.opts"]
+    end
+  end
+  t.pattern = "spec/**/*_spec.rb"
 
   begin
     t.rcov = ENV.has_key?("NO_RCOV") ? ENV["NO_RCOV"] != "true" : true
